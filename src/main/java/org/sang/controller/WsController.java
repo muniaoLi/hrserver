@@ -15,6 +15,7 @@ import java.security.Principal;
  */
 @Controller
 public class WsController {
+
     @Autowired
     SimpMessagingTemplate messagingTemplate;
 

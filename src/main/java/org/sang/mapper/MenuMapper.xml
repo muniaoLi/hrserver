@@ -37,6 +37,41 @@
             </collection>
         </collection>
     </resultMap>
+
+    <resultMap id="MenuMap" type="org.sang.bean.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="component" property="component" javaType="java.lang.Object"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="iconCls" property="iconCls" jdbcType="VARCHAR"/>
+        <result column="parentId" property="parentId" jdbcType="INTEGER"/>
+
+        <association property="meta" javaType="org.sang.bean.MenuMeta">
+            <result column="keepAlive" property="keepAlive"/>
+            <result column="requireAuth" property="requireAuth"/>
+        </association>
+
+        <collection property="children" ofType="org.sang.bean.Menu" select="org.sang.mapper.MenuMapper.getMenuByParentId" column="id">
+        </collection>
+
+        <collection property="roles" ofType="org.sang.bean.Role" select="org.sang.mapper.MenuMapper.getRolesByMenuId" column="id">
+        </collection>
+
+    </resultMap>
+
+    <select id="getMenuByParentId" resultMap="MenuMap">
+        select * from menu m where m.parentId=#{id} and m.enabled=true
+    </select>
+
+    <select id="getMenuTree" resultMap="MenuMap">
+        select * from menu m where m.id=1
+    </select>
+
+    <select id="getRolesByMenuId" resultType="org.sang.bean.Role">
+        select r.* from role r, menu_role mr where r.id = mr.rid and mr.mid=#{mid}
+    </select>
+
     <select id="getAllMenu" resultMap="BaseResultMap">
         select m.*,r.`id` as rid,r.`name` as rname,r.`nameZh` as rnamezh from menu m left join menu_role mr on m.`id`=mr.`mid` left join role r on mr.`rid`=r.`id` WHERE m.`enabled`=true order by m.`id` desc
     </select>

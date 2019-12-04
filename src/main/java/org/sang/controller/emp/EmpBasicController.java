@@ -113,6 +113,23 @@ public class EmpBasicController {
         return map;
     }
 
+
+    @RequestMapping(value = "/empTest", method = RequestMethod.GET)
+    public Map<String, Object> getEmployeeTestByPage(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "") String keywords) {
+        Map<String, Object> map = new HashMap<>();
+        List<Employee> employeeByPage = empService.getEmployeeByPage(page, size,
+                keywords,null, null, null, null, null,
+                null, null);
+        Long count = empService.getCountByKeywords(keywords, null, null,
+                null,null, null, null, null);
+        map.put("emps", employeeByPage);
+        map.put("count", count);
+        return map;
+    }
+
     @RequestMapping(value = "/exportEmp", method = RequestMethod.GET)
     public ResponseEntity<byte[]> exportEmp() {
         return PoiUtils.exportEmp2Excel(empService.getAllEmployees());
